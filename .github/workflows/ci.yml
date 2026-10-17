@@ -1,0 +1,26 @@
+name: Build check
+
+# Deploying is Cloudflare Pages' job: it builds and publishes every push to main from this repository.
+# This workflow only proves the site builds, so a broken page shows up on the pull request.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Check the build has every page
+        run: |
+          for p in index install cli terms privacy; do test -s "dist/$p.html" || { echo "missing dist/$p.html"; exit 1; }; done
