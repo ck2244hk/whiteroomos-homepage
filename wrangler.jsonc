@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers Builds: `npm run build`, then `npx wrangler deploy` serves dist/ as static assets.
+  // "name" must match the Worker's name in the Cloudflare dashboard.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "whiteroomos",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}
