@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of use · White Room OS</title>
+  <meta name="description" content="The terms for using Sill, the wros command line and this website." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <!--@include critical-->
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<!--@include sprite-->
+<!--@include intro-->
+<!--@include loader-->
+<canvas id="bg-canvas"></canvas>
+<!--@include header-->
+
+<div class="wrap docs">
+  <aside class="side" aria-label="On this page">
+    <div class="grp">Terms</div>
+    <a href="#agreement">Agreement</a>
+    <a href="#software">The software</a>
+    <a href="#data">Your data</a>
+    <a href="#use">Acceptable use</a>
+    <a href="#third">Third-party services</a>
+    <a href="#ai">AI features</a>
+    <a href="#warranty">No warranty</a>
+    <a href="#liability">Liability</a>
+    <a href="#updates">Updates &amp; ending</a>
+    <a href="#law">Governing law</a>
+    <a href="#changes">Changes</a>
+    <a href="#contact">Contact</a>
+  </aside>
+
+  <main class="doc">
+    <div class="draft"><i>DRAFT</i><div><b>Needs review before publishing.</b> Items marked <span class="todo">TO CONFIRM</span> are facts only the project owner can supply, and the whole text should be checked by a lawyer. This is not legal advice.</div></div>
+
+    <div class="eyebrow">Legal</div>
+    <h1>Terms of use</h1>
+    <p class="lead">Plain-language terms for Sill, the <code class="inline">wros</code> command line and this website. White Room OS is an early build, and these terms say so honestly.</p>
+    <p class="stamp">Last updated {{UPDATED}}</p>
+
+    <section id="agreement">
+      <h2>Agreement</h2>
+      <p>By downloading, installing or using Sill, <code class="inline">wros</code> or this website (together, the "Services"), you agree to these terms and to our <a href="privacy.html" style="color:var(--accent)">privacy policy</a>. They are offered by {{ENTITY}} ("we", "us"). If you do not agree, do not use the Services.</p>
+    </section>
+
+    <section id="software">
+      <h2>The software</h2>
+      <ol class="legal">
+        <li>The Services are an <b>early build</b>. Features change, may be incomplete, and some are marked beta or placeholder.</li>
+        <li>Licence: <span class="todo">TO CONFIRM: licence of the software and whether the source is open</span>. Until confirmed, we grant you a personal, non-exclusive, non-transferable right to install and use the software on devices you control.</li>
+        <li>The White Room OS, WROS and Sill names, marks and logos belong to us. These terms give you no right to use them beyond describing the software accurately.</li>
+        <li>Download only from our releases page and check the published SHA-256 sums. We are not responsible for copies from elsewhere.</li>
+      </ol>
+    </section>
+
+    <section id="data">
+      <h2>Your data</h2>
+      <p>Your mail, calendar, tasks, contacts and files stay on your computer. You own them, and we do not receive or access them. You are responsible for backing them up (<code class="inline">wros backup</code>) and for keeping your database key safe: <b>without the key, an encrypted database cannot be recovered</b>, by you or by us. Uninstalling never deletes your data.</p>
+    </section>
+
+    <section id="use">
+      <h2>Acceptable use</h2>
+      <p>Do not use the Services to break the law, to send spam or abuse through the mail features, to access accounts that are not yours, to attack or overload other people's systems, or to reverse the security protections of the software in order to harm others. Commands that send or delete need your explicit confirmation; you are responsible for what you, or a script or AI agent you authorise, send or delete.</p>
+    </section>
+
+    <section id="third">
+      <h2>Third-party services</h2>
+      <p>Sill connects to services you choose, such as Google, Microsoft, mail servers, AI providers and Matrix homeservers. Those services have their own terms and policies, which you accept directly with them. We do not control them and are not responsible for them.</p>
+    </section>
+
+    <section id="ai">
+      <h2>AI features</h2>
+      <p>AI features are optional and in beta. Their output can be wrong, incomplete or inappropriate. Check it before you rely on it or send it to anyone. Do not use it as professional advice.</p>
+    </section>
+
+    <section id="warranty">
+      <h2>No warranty</h2>
+      <p>The Services are provided <b>"as is" and "as available"</b>, without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose, and non-infringement, to the fullest extent the law allows. We do not promise that the Services will be uninterrupted, error-free or free of data loss.</p>
+    </section>
+
+    <section id="liability">
+      <h2>Limitation of liability</h2>
+      <p>To the fullest extent the law allows, we are not liable for indirect, incidental, special or consequential damages, or for loss of data, profits or business, arising from your use of the Services. Our total liability for any claim is limited to <span class="todo">TO CONFIRM: amount, e.g. the amount you paid us, or a fixed sum</span>. Nothing here limits liability that cannot be limited by law.</p>
+    </section>
+
+    <section id="updates">
+      <h2>Updates and ending</h2>
+      <p>We may update or discontinue the Services. Some updates change stored data in a way an older version cannot read; the updater asks first and makes a backup. You may stop using the Services at any time by uninstalling them. We may suspend access to the website or downloads if these terms are broken. Sections that by their nature should continue (ownership, no warranty, liability) will continue.</p>
+    </section>
+
+    <section id="law">
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of {{JURISDICTION}}, and disputes go to the courts there, unless your local consumer law says otherwise.</p>
+    </section>
+
+    <section id="changes">
+      <h2>Changes</h2>
+      <p>We may change these terms. We will update the date above, and for material changes say so on the home page. Continued use after a change means you accept it.</p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>Questions about these terms: <a href="mailto:{{CONTACT_EMAIL}}" style="color:var(--accent)">{{CONTACT_EMAIL}}</a>.</p>
+    </section>
+
+    <div class="pager">
+      <a href="privacy.html"><small>Related</small><span>Privacy policy</span></a>
+      <a href="index.html"><small>Back</small><span>Home</span></a>
+    </div>
+  </main>
+</div>
+
+<!--@include footer-->
+</body>
+</html>

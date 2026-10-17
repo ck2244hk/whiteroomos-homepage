@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download &amp; install · White Room OS</title>
+  <meta name="description" content="Download and install Sill and the wros command line on Windows and Debian-family Linux." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <!--@include critical-->
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<!--@include sprite-->
+<!--@include intro-->
+<!--@include loader-->
+<canvas id="bg-canvas"></canvas>
+<!--@include header-->
+
+<div class="wrap docs">
+  <aside class="side" aria-label="On this page">
+    <div class="grp">Install</div>
+    <a href="#download">Download</a>
+    <a href="#requirements">Requirements</a>
+    <a href="#install-steps">Install steps</a>
+    <a class="sub" href="#way-terminal">Terminal first</a>
+    <a class="sub" href="#way-app">Sill app first</a>
+    <a class="sub" href="#both">Doing both</a>
+    <a href="#first-run">First run</a>
+    <div class="grp">Afterwards</div>
+    <a href="#path">PATH</a>
+    <a href="#update">Update &amp; remove</a>
+    <a href="#trouble">Troubleshooting</a>
+  </aside>
+
+  <main class="doc">
+    <div class="warn"><span><b>No public release yet.</b> The links below point at a placeholder releases page, and the install scripts and installers will only work once the first release is published. The steps are accurate to the current build.</span></div>
+
+    <div class="eyebrow">Install</div>
+    <h1>Download &amp; install</h1>
+    <p class="lead">Two ways in, and either can come first. They know about each other and never install anything twice. Everything you download is checked against a published SHA-256 sum before it is installed.</p>
+
+    <section id="download">
+      <h2>Download</h2>
+      <div class="dl-grid">
+        <div class="dl">
+          <div class="dl-head"><img src="/brand/sill-zipper-icon-dark.svg" alt="" /><h3>Sill for Windows</h3></div>
+          <span class="meta">.exe · per-user</span>
+          <p>The desktop app. It bundles <code class="inline">wros</code> and <code class="inline">sill-core</code> and sets everything up on first start.</p>
+          <a class="btn-accent" href="{{RELEASES_URL}}">Open releases page</a>
+        </div>
+        <div class="dl">
+          <div class="dl-head"><img src="/brand/sill-zipper-icon-dark.svg" alt="" /><h3>Sill for Debian / Ubuntu</h3></div>
+          <span class="meta">.deb</span>
+          <p>The desktop app as a package. It puts <code class="inline">wros</code> in <code class="inline">/usr/bin</code>.</p>
+          <a class="btn-accent" href="{{RELEASES_URL}}">Open releases page</a>
+        </div>
+        <div class="dl">
+          <div class="dl-head"><svg viewBox="0 0 1016 242" aria-label="wros"><use href="#wm"/></svg></div>
+          <span class="meta">wros-setup-windows-x86_64.exe</span>
+          <p>The command line for Windows. No administrator rights; adds itself to your user PATH.</p>
+          <a class="btn-ghost" href="{{RELEASES_URL}}">Open releases page</a>
+        </div>
+        <div class="dl">
+          <div class="dl-head"><svg viewBox="0 0 1016 242" aria-label="wros"><use href="#wm"/></svg></div>
+          <span class="meta">install.sh · install.ps1</span>
+          <p>One-line installers for Linux and Windows terminals. See below.</p>
+          <a class="btn-ghost" href="#way-terminal">Jump to the commands</a>
+        </div>
+      </div>
+      <p>The releases page also lists <code class="inline">SHA256SUMS</code>. Sill for macOS is not available yet; <code class="inline">wros</code> itself does support macOS shells for PATH setup.</p>
+    </section>
+
+    <section id="requirements">
+      <h2>Requirements</h2>
+      <ul class="plain">
+        <li>Windows 10 or 11, or a Debian-family Linux (Debian, Ubuntu) for the Sill desktop app.</li>
+        <li>A terminal for <code class="inline">wros</code>. No administrator rights are needed on Windows; the Linux script installs into <code class="inline">~/.local/bin</code> without <code class="inline">sudo</code>.</li>
+        <li>An internet connection for the first install, which fetches the cores you choose. After that Sill works against your local data.</li>
+        <li>For Sill on the web: a modern browser on the same computer. The web UI is served only to this machine.</li>
+      </ul>
+      <div class="note"><span><b>Honest status.</b> The Linux install has not yet been run on a real machine, and <code class="inline">wros update</code> self-replacement has only been exercised by tests and dry runs.</span></div>
+    </section>
+
+    <section id="install-steps">
+      <h2>Install steps</h2>
+      <p>Pick one way. If you are unsure, take the Sill app: it needs no terminal.</p>
+
+      <h3 id="way-terminal">Way 1: the terminal first</h3>
+      <div class="steps">
+        <div class="step">
+          <h4>Install wros</h4>
+          <div class="tabs" data-tabs>
+            <div class="tablist" role="tablist">
+              <button class="tab" role="tab" aria-selected="true">Linux</button>
+              <button class="tab" role="tab" aria-selected="false">Windows (PowerShell)</button>
+              <button class="tab" role="tab" aria-selected="false">Windows (setup program)</button>
+            </div>
+            <div class="panel" role="tabpanel">
+              <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> curl -fsSL {{RELEASES_URL}}/latest/download/install.sh | sh</pre></div>
+              <p style="margin-top:12px">Installs <code class="inline">wros</code> and <code class="inline">sill</code> in <code class="inline">~/.local/bin</code> (change with <code class="inline">WROS_INSTALL_DIR</code>) and checks them against <code class="inline">SHA256SUMS</code>. Options: <code class="inline">--modify-path</code>, <code class="inline">--version 0.2.0</code>, <code class="inline">--uninstall</code>.</p>
+            </div>
+            <div class="panel" role="tabpanel" hidden>
+              <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> irm {{RELEASES_URL}}/latest/download/install.ps1 | iex</pre></div>
+              <p style="margin-top:12px">Per-user install into <code class="inline">%LOCALAPPDATA%\Programs\wros</code>, added to your user PATH.</p>
+            </div>
+            <div class="panel" role="tabpanel" hidden>
+              <p>Download <code class="inline">wros-setup-windows-x86_64.exe</code> from the releases page and run it. It asks whether to start the core when you sign in. Silent install:</p>
+              <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros-setup-windows-x86_64.exe /S [/NOPATH] [/AUTOSTART] [/D=C:\folder]</pre></div>
+              <p style="margin-top:12px"><code class="inline">wros.exe</code> on its own also works: it is a single file.</p>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <h4>Choose what to install</h4>
+          <p>This fetches the cores you pick (and the desktop app, if you want it), each file checked.</p>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros install -d            <span class="c"># recommended + the desktop app</span>
+<span class="p">$</span> wros install -m            <span class="c"># minimal: email only</span>
+<span class="p">$</span> wros install -c email,tasks <span class="c"># exactly these (plus what they need)</span></pre></div>
+          <p>The recommended set is email, calendar, tasks, contacts, codes, media and PDF. Installing is additive: you can run it again to add more.</p>
+        </div>
+        <div class="step">
+          <h4>Start it</h4>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros up           <span class="c"># start the core in the background</span>
+<span class="p">$</span> wros sill up      <span class="c"># open the Sill app</span></pre></div>
+        </div>
+      </div>
+
+      <h3 id="way-app">Way 2: the Sill app first</h3>
+      <div class="steps">
+        <div class="step">
+          <h4>Run the Sill installer</h4>
+          <p>Run the <code class="inline">.exe</code> on Windows, or install the <code class="inline">.deb</code> on Debian or Ubuntu. It installs the app per user and bundles <code class="inline">wros</code> and <code class="inline">sill-core</code> next to it.</p>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="c"># Debian / Ubuntu</span>
+<span class="p">$</span> sudo dpkg -i ./&lt;downloaded-file&gt;.deb</pre></div>
+        </div>
+        <div class="step">
+          <h4>Start Sill</h4>
+          <p>On its first start the app registers itself, starts the core it bundled, and shows a setup page: <b>Minimal</b>, <b>Default</b> or your own choice. It fetches the cores you pick, with progress, and opens the first section.</p>
+        </div>
+        <div class="step">
+          <h4>Use it from a terminal too <span style="font-weight:400;color:var(--gray)">(optional)</span></h4>
+          <p>The installer does not edit your PATH without asking. Run this once, then open a new terminal. It is the same <code class="inline">wros</code> the app uses.</p>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> "&lt;app folder&gt;\wros.exe" path add   <span class="c"># Windows</span></pre></div>
+          <p>On Debian and Ubuntu the <code class="inline">.deb</code> already puts <code class="inline">wros</code> in <code class="inline">/usr/bin</code>.</p>
+        </div>
+      </div>
+
+      <h3 id="both">If you do both</h3>
+      <p>Nothing is installed twice, and nothing conflicts.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>You did</th><th>What happens</th></tr></thead>
+        <tbody>
+          <tr><td>Sill app, then the install script</td><td>The script finds the bundled <code>wros</code>, says where it is, and installs nothing. <code>--force</code> installs a second copy anyway.</td></tr>
+          <tr><td>Sill app, then <code>wros install -d</code></td><td>Says "Sill is already installed"; fetches the cores only. The app's setup page then has nothing left to ask.</td></tr>
+          <tr><td><code>wros</code>, then <code>wros install -d</code></td><td>The app installs with its own <code>wros</code> bundled and registers itself. Cores already fetched are reused. Either <code>wros</code> may be used.</td></tr>
+        </tbody>
+      </table></div>
+      <p>There is always one background core (an instance lock), one start-at-login entry, one choice of components, and one database and key.</p>
+    </section>
+
+    <section id="first-run">
+      <h2>First run</h2>
+      <p>Check that everything is up, then connect an account.</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros version
+<span class="p">$</span> wros status
+<span class="p">$</span> wros account connect gmail --email you@gmail.com   <span class="c"># opens your browser to sign in</span>
+<span class="p">$</span> wros email list --limit 5</pre></div>
+      <p>Programs fetched by <code class="inline">wros</code> live in one folder, <code class="inline">~/.sill/bin</code> (on Windows <code class="inline">%USERPROFILE%\.sill\bin</code>), never inside an app's folder. Your database lives in the data folder (on Windows <code class="inline">%APPDATA%\Sill</code>); logs, backups and run files live in <code class="inline">~/.sill</code>.</p>
+      <p>Want it running whenever you sign in? <code class="inline">wros autostart on</code>.</p>
+    </section>
+
+    <section id="path">
+      <h2>PATH</h2>
+      <p><code class="inline">wros path add</code> changes only your own settings, needs no administrator rights, is safe to run twice, and <code class="inline">wros path remove</code> undoes exactly it.</p>
+      <ul class="plain">
+        <li><b>Windows:</b> your user <code class="inline">Path</code> in the registry (<code class="inline">HKCU\Environment</code>), written as Unicode so names with accents or Chinese characters are safe.</li>
+        <li><b>Linux and macOS:</b> a marked block (<code class="inline"># &gt;&gt;&gt; wros &gt;&gt;&gt;</code>) in the files your shell reads: <code class="inline">~/.profile</code>, plus <code class="inline">~/.bashrc</code>, <code class="inline">~/.zshrc</code> or <code class="inline">~/.config/fish/conf.d/wros.fish</code> depending on your shell.</li>
+      </ul>
+      <p>Open a new terminal afterwards; programs that were already running need a restart.</p>
+    </section>
+
+    <section id="update">
+      <h2>Update &amp; remove</h2>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros update --check       <span class="c"># see what is available</span>
+<span class="p">$</span> wros update               <span class="c"># core, cores, the app and wros itself</span>
+<span class="p">$</span> wros component remove tasks  <span class="c"># take a component out (its data stays)</span></pre></div>
+      <p>A release that changes stored data in a way an older core cannot read asks for <code class="inline">--allow-breaking</code> and backs your data up first to <code class="inline">~/.sill/backups/</code>. You can also run <code class="inline">wros backup</code> and <code class="inline">wros restore &lt;dir&gt;</code> yourself.</p>
+      <div class="note"><span><b>Your data is never deleted by an uninstall.</b> Uninstalling the Sill app, the wros setup program, or <code class="inline">install.sh --uninstall</code> removes programs only. The database key is not part of a backup: keep it with your keychain or <code class="inline">db.key</code>.</span></div>
+    </section>
+
+    <section id="trouble">
+      <h2>Troubleshooting</h2>
+      <h3>"command not found: wros"</h3>
+      <p>The install folder is not on your PATH. Run <code class="inline">wros path add</code> (using the full path if needed), then open a new terminal.</p>
+      <h3>"the tasks component is not installed" (WROS-E317)</h3>
+      <p>Run the fix it prints: <code class="inline">wros install -c tasks</code>.</p>
+      <h3>Toasts do not appear on Windows</h3>
+      <p>Run <code class="inline">wros notify test</code>, and check Focus assist / Do not disturb.</p>
+      <h3>Anything else</h3>
+      <p><code class="inline">wros doctor</code> reports the data directory, the database and which mode a command would run in. <code class="inline">wros logs -f</code> follows the system log.</p>
+    </section>
+
+    <div class="pager">
+      <a href="index.html"><small>Back</small><span>Home</span></a>
+      <a href="cli.html"><small>Next</small><span>Command line guide</span></a>
+    </div>
+  </main>
+</div>
+
+<!--@include footer-->
+</body>
+</html>

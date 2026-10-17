@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy policy · White Room OS</title>
+  <meta name="description" content="What data Sill, wros and this website handle, where it lives, and who it is shared with." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <!--@include critical-->
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<!--@include sprite-->
+<!--@include intro-->
+<!--@include loader-->
+<canvas id="bg-canvas"></canvas>
+<!--@include header-->
+
+<div class="wrap docs">
+  <aside class="side" aria-label="On this page">
+    <div class="grp">Privacy</div>
+    <a href="#summary">In short</a>
+    <a href="#who">Who we are</a>
+    <a href="#software">The software</a>
+    <a href="#outside">Outside connections</a>
+    <a href="#ai">AI features</a>
+    <a href="#website">This website</a>
+    <a href="#control">Your control</a>
+    <a href="#security">Security</a>
+    <a href="#children">Children</a>
+    <a href="#changes">Changes</a>
+    <a href="#contact">Contact</a>
+  </aside>
+
+  <main class="doc">
+    <div class="draft"><i>DRAFT</i><div><b>Needs review before publishing.</b> Written from how the software is built. Items marked <span class="todo">TO CONFIRM</span> are facts only the project owner can supply. This is not legal advice.</div></div>
+
+    <div class="eyebrow">Legal</div>
+    <h1>Privacy policy</h1>
+    <p class="lead">White Room OS starts from one idea: you own your bits. This page says what that means in practice for Sill, the <code class="inline">wros</code> command line, and this website.</p>
+    <p class="stamp">Last updated {{UPDATED}}</p>
+
+    <section id="summary">
+      <h2>In short</h2>
+      <ul class="plain">
+        <li>Your mail, calendar, tasks and contacts are stored on <b>your own computer</b>, in an encrypted database.</li>
+        <li>We do not run a server that receives your data. The software talks to the providers <b>you</b> connect, and to the releases host when you install or update.</li>
+        <li>Passwords and sign-in tokens never leave your machine except to the provider they belong to.</li>
+        <li>We found no analytics or telemetry in the software <span class="todo">TO CONFIRM</span>, and this website sets no cookies and loads nothing from third parties.</li>
+      </ul>
+    </section>
+
+    <section id="who">
+      <h2>Who we are</h2>
+      <p>{{ENTITY}} ("we", "us") publishes Sill, <code class="inline">wros</code> and this website. Contact: <a href="mailto:{{CONTACT_EMAIL}}" style="color:var(--accent)">{{CONTACT_EMAIL}}</a>.</p>
+    </section>
+
+    <section id="software">
+      <h2>The software: Sill and wros</h2>
+      <h3>What is stored, and where</h3>
+      <p>Sill keeps what it handles in a database in a data folder on your computer (on Windows <code class="inline">%APPDATA%\Sill</code>). The database is encrypted (SQLCipher). Its key is held in your operating system's keychain, or in a key file <code class="inline">db.key</code> in that folder when no keychain is available. Logs, backups, downloaded programs and Matrix data live in <code class="inline">~/.sill</code>. This includes your email and attachments, calendar events, tasks, contacts, verification codes found in your mail, and settings.</p>
+      <h3>Accounts and secrets</h3>
+      <p>When you connect Gmail, Outlook or another mail account, one internal component, the <b>connectors</b> core, holds your password or OAuth refresh token. The other cores receive only what they need to do a job, such as a short-lived access token held in memory. No command, log or event prints a secret, and the AI and the command line cannot read them.</p>
+      <h3>Logs and crash reports</h3>
+      <p>The software writes logs, an audit log of commands (<code class="inline">~/.sill/logs/cli-audit.jsonl</code>) and crash reports to your computer. They are not sent to us. You can view and delete them with <code class="inline">wros logs</code> and <code class="inline">wros log</code>.</p>
+      <h3>Local servers</h3>
+      <p>The core and the web UI listen only on your own computer (127.0.0.1) and require a token. Nothing listens on a network address.</p>
+      <h3>Backups</h3>
+      <p><code class="inline">wros backup</code> copies the database to <code class="inline">~/.sill/backups/</code>. The key is not included.</p>
+    </section>
+
+    <section id="outside">
+      <h2>Outside connections</h2>
+      <p>The software connects to the internet only for these reasons, and you can list and switch each one off with <code class="inline">wros permissions list</code> and <code class="inline">wros permissions disable &lt;id&gt;</code>:</p>
+      <ul class="plain">
+        <li><b>Your providers.</b> The mail, calendar or chat servers of accounts you connect (for example Google, Microsoft, or your own IMAP/SMTP server). What they receive and how they handle it is governed by their own policies. Sign-in uses your browser (OAuth) and goes only to the provider.</li>
+        <li><b>Installing and updating.</b> <code class="inline">wros install</code> and <code class="inline">wros update</code> fetch release information and files from the releases host <span class="todo">TO CONFIRM: host</span>. That host can see your IP address and the version and platform you request, as any download server does. Files are checked against published SHA-256 sums.</li>
+        <li><b>Optional features you turn on</b>, such as the AI assistant (below) or Matrix.</li>
+      </ul>
+      <p>Google sign-in: Sill uses your Google account data only to show it to you inside Sill. <span class="todo">TO CONFIRM</span>: if Sill is published with Google's restricted scopes, add Google's required "Limited Use" statement here.</p>
+    </section>
+
+    <section id="ai">
+      <h2>AI features</h2>
+      <p>AI features (classification, summaries, chat) are optional and are in beta. When you use them, the text you ask about is sent to the AI provider you configured: a model running on your own computer (such as Ollama), or Claude (Anthropic) using the key you supply. If you use a provider, its policy applies to what you send. Keys are stored by the connectors core, never in a command line.</p>
+    </section>
+
+    <section id="website">
+      <h2>This website</h2>
+      <ul class="plain">
+        <li>No cookies, no analytics, no advertising and no tracking scripts.</li>
+        <li>Fonts and images are served from this site itself, not from a third party.</li>
+        <li>The web server or host may keep ordinary access logs (IP address, page, time) for security and to keep the site running <span class="todo">TO CONFIRM: hosting provider and retention</span>.</li>
+        <li>If you email us, we keep the message to reply to you.</li>
+      </ul>
+    </section>
+
+    <section id="control">
+      <h2>Your control</h2>
+      <p>Because the data is on your computer, you hold it. You can read it, back it up (<code class="inline">wros backup</code>), move it, and delete it: remove an account with <code class="inline">wros account remove &lt;id&gt; --yes</code> to delete its local mail and stored credentials, or delete the data folder and <code class="inline">~/.sill</code> to remove everything. Uninstalling the apps never deletes your data.</p>
+      <p>We hold no copy of your Sill data, so there is nothing for us to export or erase on your behalf. For anything we do hold, such as an email you sent us, contact us and we will help. <span class="todo">TO CONFIRM: add the rights notices your jurisdiction requires (e.g. GDPR, CCPA)</span>.</p>
+    </section>
+
+    <section id="security">
+      <h2>Security</h2>
+      <p>Encryption at rest, isolated handling of secrets, local-only servers and checksummed downloads are described above. No system is perfectly secure, and an early build can have bugs. Please report security problems to <a href="mailto:{{CONTACT_EMAIL}}" style="color:var(--accent)">{{CONTACT_EMAIL}}</a>.</p>
+    </section>
+
+    <section id="children">
+      <h2>Children</h2>
+      <p>Sill and this website are not directed at children under 13 <span class="todo">TO CONFIRM: age</span>, and we do not knowingly collect information from them.</p>
+    </section>
+
+    <section id="changes">
+      <h2>Changes</h2>
+      <p>If we change this policy we will update the date at the top, and for material changes say so on the home page.</p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>Questions about privacy: <a href="mailto:{{CONTACT_EMAIL}}" style="color:var(--accent)">{{CONTACT_EMAIL}}</a>.</p>
+    </section>
+
+    <div class="pager">
+      <a href="terms.html"><small>Related</small><span>Terms of use</span></a>
+      <a href="index.html"><small>Back</small><span>Home</span></a>
+    </div>
+  </main>
+</div>
+
+<!--@include footer-->
+</body>
+</html>

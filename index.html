@@ -3,749 +3,187 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>White Room OS</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <title>wros · White Room OS</title>
+  <meta name="description" content="wros is the command line for White Room OS: one tool for your email, calendar, tasks, contacts and PDFs, kept on your own machine. Sill is the companion app." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <!--@include critical-->
+  <script type="module" src="/src/main.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --white:        #FDFCFB;
-      --off:          #F6F3EF;
-      --gray:         #9A9490;
-      --mid:          #6B6560;
-      --dark:         #1C1917;
-      --accent:       #A0724A;
-      --accent-light: #C9966E;
-      --accent-pale:  #F0E6DA;
-      --border:       #E8E2DA;
-      --radius:       14px;
-    }
-
-    html { scroll-behavior: smooth; }
-    html, body {
-      min-height: 100%;
-      background: var(--white);
-      color: var(--dark);
-      font-family: 'Space Grotesk', sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        transparent 0px, transparent 3px,
-        rgba(0,0,0,0.012) 3px, rgba(0,0,0,0.012) 4px
-      );
-      pointer-events: none;
-      z-index: 100;
-    }
-
-    #bg-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── HEADER ── */
-    header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(253,252,251,0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      z-index: 50;
-    }
-
-    .logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--dark);
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
-    .logo-pip {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
-    nav {
-      display: flex;
-      gap: 4px;
-      font-size: 13px;
-    }
-    nav a {
-      color: var(--mid);
-      text-decoration: none;
-      padding: 5px 12px;
-      border-radius: 8px;
-      transition: background 0.15s, color 0.15s;
-    }
-    nav a:hover { background: var(--off); color: var(--dark); }
-
-    .nav-contact {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      background: var(--accent-pale);
-      color: var(--accent);
-      padding: 7px 18px;
-      border: 1px solid #DFC5A8;
-      border-radius: 9px;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
-      text-decoration: none;
-    }
-    .nav-contact:hover { background: #E8D4BE; transform: translateY(-1px); }
-
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 130px 40px 90px;
-      max-width: 1080px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    .eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .eyebrow::before {
-      content: '';
-      display: inline-block;
-      width: 20px; height: 1px;
-      background: var(--accent-light);
-    }
-
-    h1 {
-      font-size: clamp(50px, 8vw, 108px);
-      font-weight: 700;
-      line-height: 0.97;
-      letter-spacing: -0.03em;
-      margin-bottom: 32px;
-    }
-    h1 em {
-      font-style: normal;
-      color: var(--accent);
-    }
-    h1 .sub-word {
-      font-weight: 300;
-      color: var(--gray);
-    }
-
-    .hero-sub {
-      font-size: clamp(16px, 1.8vw, 19px);
-      color: var(--mid);
-      max-width: 520px;
-      line-height: 1.7;
-      font-weight: 400;
-      margin-bottom: 44px;
-    }
-
-    .hero-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      color: var(--gray);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hero-tag::before {
-      content: '';
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent-light);
-      opacity: 0.6;
-    }
-
-    /* ── VISION ── */
-    .vision-wrap {
-      background: var(--dark);
-      position: relative;
-      z-index: 1;
-    }
-    .vision {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 100px 40px;
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 80px;
-      align-items: start;
-    }
-
-    .vision-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      color: var(--accent-light);
-      text-transform: uppercase;
-      padding-top: 6px;
-    }
-
-    .vision-body {
-      color: #CEC8C0;
-    }
-    .vision-body p {
-      font-size: clamp(17px, 2vw, 22px);
-      line-height: 1.65;
-      font-weight: 400;
-    }
-    .vision-body p + p {
-      margin-top: 24px;
-      font-size: 15px;
-      color: #7A7470;
-    }
-    .vision-body em {
-      font-style: normal;
-      color: var(--accent-light);
-    }
-
-    /* ── PILLARS ── */
-    .pillars-wrap {
-      background: var(--off);
-      position: relative;
-      z-index: 1;
-    }
-    .pillars-header {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 80px 40px 40px;
-    }
-    .pillars-header h2 {
-      font-size: clamp(22px, 3vw, 30px);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--dark);
-      margin-bottom: 10px;
-    }
-    .pillars-header p {
-      font-size: 15px;
-      color: var(--mid);
-      max-width: 480px;
-      line-height: 1.6;
-    }
-
-    .pillars {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 40px 80px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .pillar {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 36px 32px;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .pillar:hover { border-color: var(--accent-light); transform: translateY(-2px); }
-
-    .pillar-icon {
-      width: 36px; height: 36px;
-      border-radius: 9px;
-      background: var(--accent-pale);
-      border: 1px solid #DFC5A8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      font-size: 16px;
-    }
-
-    .pillar-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--accent);
-      letter-spacing: 0.14em;
-      margin-bottom: 14px;
-      display: block;
-      text-transform: uppercase;
-    }
-    .pillar h3 {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 10px;
-      color: var(--dark);
-    }
-    .pillar p {
-      font-size: 14px;
-      color: var(--mid);
-      line-height: 1.72;
-    }
-
-    /* ── BLUEPRINT NOTE ── */
-    .blueprint-wrap {
-      position: relative;
-      z-index: 1;
-      background: var(--white);
-    }
-    .blueprint {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 90px 40px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-
-    .blueprint-left h2 {
-      font-size: clamp(26px, 3.5vw, 40px);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      color: var(--dark);
-    }
-    .blueprint-left h2 em {
-      font-style: normal;
-      color: var(--accent);
-    }
-    .blueprint-left p {
-      font-size: 15px;
-      color: var(--mid);
-      line-height: 1.7;
-      max-width: 400px;
-    }
-
-    .blueprint-right {
-      background: var(--off);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--gray);
-      line-height: 2;
-    }
-    .blueprint-right .status-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .blueprint-right .status-row:last-child { border-bottom: none; }
-    .status-label { color: var(--mid); }
-    .status-badge {
-      font-size: 10px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.08em;
-    }
-    .badge-active {
-      background: #EDF4E8;
-      color: #5A8040;
-      border: 1px solid #C5DCAF;
-    }
-    .badge-drafting {
-      background: var(--accent-pale);
-      color: var(--accent);
-      border: 1px solid #DFC5A8;
-    }
-    .badge-planned {
-      background: var(--off);
-      color: var(--gray);
-      border: 1px solid var(--border);
-    }
-
-    /* ── CONTACT CTA ── */
-    .contact-wrap {
-      position: relative;
-      z-index: 1;
-      background: var(--off);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .contact {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 80px 40px;
-      text-align: center;
-    }
-    .contact p.pre {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-    .contact h2 {
-      font-size: clamp(24px, 3vw, 36px);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      color: var(--dark);
-      margin-bottom: 14px;
-    }
-    .contact > p {
-      font-size: 15px;
-      color: var(--mid);
-      max-width: 440px;
-      margin: 0 auto 36px;
-      line-height: 1.65;
-    }
-    .contact-links {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-accent {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      background: var(--accent);
-      color: var(--white);
-      padding: 13px 28px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-accent:hover { background: var(--accent-light); transform: translateY(-1px); }
-    .btn-ghost {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 14px;
-      font-weight: 400;
-      background: transparent;
-      color: var(--mid);
-      padding: 13px 24px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
-    }
-    .btn-ghost:hover { border-color: var(--accent-light); color: var(--accent); background: var(--accent-pale); }
-
-    /* ── FOOTER ── */
-    footer {
-      position: relative;
-      z-index: 1;
-      background: var(--white);
-      padding: 28px 40px;
-      max-width: 1080px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .footer-logo {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--gray);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .footer-links {
-      display: flex;
-      gap: 4px;
-      font-size: 13px;
-    }
-    .footer-links a {
-      color: var(--mid);
-      text-decoration: none;
-      padding: 5px 10px;
-      border-radius: 7px;
-      transition: background 0.15s, color 0.15s;
-    }
-    .footer-links a:hover { background: var(--off); color: var(--dark); }
-
-    /* ── ANIMATIONS ── */
-    @media (prefers-reduced-motion: no-preference) {
-      .hero > * {
-        opacity: 0;
-        transform: translateY(14px);
-        animation: fadeUp 0.55s ease forwards;
-      }
-      .eyebrow  { animation-delay: 0.08s; }
-      h1        { animation-delay: 0.20s; }
-      .hero-sub { animation-delay: 0.32s; }
-      .hero-tag { animation-delay: 0.44s; }
-      @keyframes fadeUp { to { opacity: 1; transform: none; } }
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 720px) {
-      nav { display: none; }
-      .hero { padding: 110px 24px 72px; }
-      .vision { grid-template-columns: 1fr; gap: 24px; padding: 72px 24px; }
-      .pillars-header { padding: 64px 24px 32px; }
-      .pillars { grid-template-columns: 1fr; padding: 0 24px 64px; }
-      .blueprint { grid-template-columns: 1fr; gap: 40px; padding: 72px 24px; }
-      .contact { padding: 72px 24px; }
-      footer { padding: 28px 24px; flex-direction: column; align-items: flex-start; }
-    }
+    .hero { min-height: 100vh; display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: center; padding-top: 120px; padding-bottom: 80px; }
+    .hero > * { min-width: 0; }
+    .hero h1 { font-size: clamp(44px, 6.2vw, 84px); }
+    .hero { grid-template-columns: 1fr 1fr; }
   </style>
 </head>
 <body>
+<!--@include sprite-->
+<!--@include intro-->
+<!--@include loader-->
+<canvas id="bg-canvas"></canvas>
+<!--@include header-->
 
-  <canvas id="bg-canvas"></canvas>
-
-  <!-- HEADER -->
-  <header>
-    <div class="logo">
-      <span class="logo-pip"></span>
-      WROS
-    </div>
-    <nav>
-      <a href="#vision">Vision</a>
-      <a href="#ideas">Ideas</a>
-      <a href="#status">Status</a>
-    </nav>
-    <a href="mailto:hello@whiteroom.os" class="nav-contact">Get in touch</a>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="eyebrow">Currently blueprinting</div>
-    <h1>
-      White<em>Room</em><br>
-      <span class="sub-word">OS</span>
-    </h1>
+<!-- HERO -->
+<section class="wrap hero">
+  <div>
+    <div class="eyebrow">Command line · Early build</div>
+    <h1>Your data.<br><em>One command</em><span class="sub-word">.</span></h1>
     <p class="hero-sub">
-      White Room OS is a new kind of operating system — one that puts people,
-      conversation, and personal space at the center. Not apps. Not windows. You.
+      <code class="inline">wros</code> is the command line for White Room OS. It runs and reaches every core
+      (email, calendar, tasks, contacts, PDFs) on your own machine, encrypted and private.
+      Sill is the optional companion app on top.
     </p>
-    <div class="hero-tag">Not a Linux distro. Something different.</div>
-  </section>
-
-  <!-- VISION -->
-  <div class="vision-wrap" id="vision">
-    <div class="vision">
-      <div class="vision-label">Why it exists</div>
-      <div class="vision-body">
-        <p>
-          We spend most of our lives talking to people. Messages, threads, presence —
-          the social layer of computing has never been more important, yet every OS
-          still treats it as <em>just another app</em> you switch to and from.
-          White Room OS flips that. Messaging is the substrate. Everything else
-          is built around the people you're connected with.
-        </p>
-        <p>
-          Beyond that, your desktop has never truly been yours. Every system gives you the
-          same flat grid of icons, the same taskbar, the same assumption that a computer
-          is a tool to manage rather than a space to inhabit. We think that's worth
-          rethinking from the ground up — which is exactly what we're doing.
-        </p>
-      </div>
+    <div class="cta-row">
+      <a class="btn-accent" href="install.html#way-terminal">Install wros</a>
+      <a class="btn-ghost" href="cli.html">Command line guide</a>
     </div>
+    <div class="hero-note">Not a Linux distro. Something different.</div>
   </div>
-
-  <!-- PILLARS -->
-  <div class="pillars-wrap" id="ideas">
-    <div class="pillars-header">
-      <h2>Core ideas</h2>
-      <p>Four principles shaping how White Room OS is being designed.</p>
-    </div>
-    <section class="pillars">
-
-      <div class="pillar">
-        <div class="pillar-icon">💬</div>
-        <span class="pillar-num">01 — Messaging</span>
-        <h3>Conversation at the OS layer</h3>
-        <p>
-          White Room OS includes a unified messaging layer built into the system itself —
-          not bundled software, not a third-party app. Your contacts, threads, and
-          presence are woven into the environment you work in.
-        </p>
-      </div>
-
-      <div class="pillar">
-        <div class="pillar-icon">🌐</div>
-        <span class="pillar-num">02 — Space</span>
-        <h3>A desktop you actually shape</h3>
-        <p>
-          Powered by Vulkan, the White Room user space is a fully editable 2D, 3D,
-          and VR canvas. You define what your desktop looks like, how it's structured,
-          and how you move through it. Your geometry, your rules.
-        </p>
-      </div>
-
-      <div class="pillar">
-        <div class="pillar-icon">⚡</div>
-        <span class="pillar-num">03 — Interactivity</span>
-        <h3>Programs as living things</h3>
-        <p>
-          Drawing from game-engine design, tasks and background processes in White Room
-          OS aren't hidden behind panels or system trays. They exist in your space —
-          visible, interactive, and part of the environment.
-        </p>
-      </div>
-
-      <div class="pillar">
-        <div class="pillar-icon">🏗️</div>
-        <span class="pillar-num">04 — Openness</span>
-        <h3>Built to be rebuilt</h3>
-        <p>
-          The user space is designed to be modified. Developers and builders can
-          rethink what an application or a desktop experience even means —
-          without hacking around the system, because shaping the system is the point.
-        </p>
-      </div>
-
-    </section>
+  <div class="hero-mark" aria-hidden="true">
+    <svg viewBox="0 0 1016 242" role="img" aria-label="WROS"><use href="#wm"/></svg>
   </div>
+</section>
 
-  <!-- BLUEPRINT STATUS -->
-  <div class="blueprint-wrap" id="status">
-    <div class="blueprint">
-      <div class="blueprint-left">
-        <h2>Still in the<br><em>blueprint</em> stage</h2>
-        <p>
-          White Room OS is at day one. We're laying the foundations —
-          thinking through what the system should fundamentally be
-          before anything gets built. Every piece is in planning,
-          and that's exactly where we want to be right now.
-          If this vision resonates, we'd love to think through it together.
-        </p>
-      </div>
-      <div class="blueprint-right">
-        <div class="status-row">
-          <span class="status-label">System architecture</span>
-          <span class="status-badge badge-planned">Planning</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Messaging layer design</span>
-          <span class="status-badge badge-planned">Planning</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Vulkan user space</span>
-          <span class="status-badge badge-planned">Planning</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Interaction model</span>
-          <span class="status-badge badge-planned">Planning</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Developer SDK</span>
-          <span class="status-badge badge-planned">Planning</span>
-        </div>
-        <div class="status-row">
-          <span class="status-label">Public release</span>
-          <span class="status-badge badge-planned">Not yet</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONTACT -->
-  <div class="contact-wrap">
-    <div class="contact">
-      <p class="pre">Get involved</p>
-      <h2>Interested in what we're building?</h2>
+<!-- VISION -->
+<div class="vision-wrap" id="vision">
+  <div class="wrap vision">
+    <div class="vision-label">Why it exists</div>
+    <div class="vision-body">
       <p>
-        We're looking for developers, collaborators, and people who believe
-        computing can feel more human. If that's you, reach out.
+        Most of what you do on a computer slips out of your hands. Your messages, files and habits
+        end up on someone else's servers, in formats you can't read, behind accounts you don't control.
+        White Room OS starts from the opposite premise: <em>you own your bits</em>.
+        Privacy isn't a setting you hunt for. It's the ground everything else is built on.
       </p>
-      <div class="contact-links">
-        <a href="mailto:hello@whiteroom.os" class="btn-accent">Send us a message</a>
-        <a href="#" class="btn-ghost">Follow the journey</a>
-      </div>
+      <p>
+        Traditional operating systems can give you that control, but only if you're willing to become an expert.
+        Everyone else trades ownership for convenience. The command line gives you the whole system directly, and Sill, the companion app, brings the same power
+        to regular people through one calm interface, while the core stays small, simple and ready to grow.
+      </p>
     </div>
   </div>
+  <div class="wrap principles">
+    <div class="principle"><b>Own your bits</b><span>Your data stays under your control, in formats you can read and take with you.</span></div>
+    <div class="principle"><b>Keep it minimal</b><span>A small core and few moving parts. Every piece has to earn its place.</span></div>
+    <div class="principle"><b>Grow by composition</b><span>New abilities arrive as new cores on the same foundation, so the system scales without bloating.</span></div>
+  </div>
+</div>
 
-  <!-- FOOTER -->
-  <footer>
-    <span class="footer-logo">
-      <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;"></span>
-      White Room OS — early blueprint
-    </span>
-    <div class="footer-links">
-      <a href="#">GitHub</a>
-      <a href="#">Changelog</a>
-      <a href="#">Contact</a>
+<!-- OBJECTIVES -->
+<div class="pillars-wrap" id="objectives">
+  <div class="wrap pillars-header">
+    <div class="eyebrow" style="margin-bottom:14px">Objectives</div>
+    <h2>What we are working toward</h2>
+    <p>In order: what we are shipping first, what we promise while doing it, and where it leads.</p>
+  </div>
+  <section class="wrap pillars">
+    <div class="pillar">
+      <span class="pillar-num">01 · Now</span>
+      <h3>A first public release of wros and Sill</h3>
+      <p>Installers for Windows and Debian-family Linux, checked against published SHA-256 sums, with the command line first and the companion app alongside. No public release exists yet.</p>
     </div>
-  </footer>
+    <div class="pillar">
+      <span class="pillar-num">02 · Always</span>
+      <h3>Your data stays yours</h3>
+      <p>An encrypted local database, passwords and tokens held by one isolated component, and every outside connection listed and switchable. Nothing leaves your machine except to the provider you chose.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-num">03 · Next</span>
+      <h3>Everything the app does, the terminal does</h3>
+      <p>One command line for every core, usable by people, scripts and AI agents under a clear safety policy. Gaps between app and terminal are written down and closed over time.</p>
+    </div>
+    <div class="pillar">
+      <span class="pillar-num">04 · Later</span>
+      <h3>White Room OS</h3>
+      <p>The long-term vision: a Vulkan-powered, editable 2D, 3D and VR desktop with messaging at its center, where tasks and programs are living, interactive things. Still on the drawing board.</p>
+    </div>
+  </section>
+</div>
 
-  <script>
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    const SPACING = 36, BASE_R = 1.2, MAX_R = 5.5, INFLUENCE = 140;
-    const ACCENT = [139, 100, 72];
-    let mouse = { x: -9999, y: -9999 }, dots = [], W, H, raf;
+<!-- SILL + WROS -->
+<div class="tool-wrap" id="sill">
+  <div class="wrap tool-head">
+    <div class="eyebrow">What exists today</div>
+    <h2>One command line.<br>Sill alongside it.</h2>
+    <p>The first pieces of White Room OS are built: <code class="inline">wros</code>, the command tool that runs and reaches every core, and Sill, a companion app for people who prefer a window to a terminal.</p>
+  </div>
+  <div class="wrap tool-grid">
 
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      dots = [];
-      for (let r = 0; r <= Math.ceil(H / SPACING); r++)
-        for (let c = 0; c <= Math.ceil(W / SPACING); c++)
-          dots.push({ x: c * SPACING, y: r * SPACING, phase: Math.random() * Math.PI * 2 });
-    }
+    <div class="tool-card">
+      <span class="tool-tag">wros · command line · primary</span>
+      <h3>A single entry point for every core</h3>
+      <p class="lede">Mail, calendar, tasks and more are separate cores, each small and focused. <code class="inline">wros</code> starts them, installs and updates them, and runs every command they offer, so scripts, shortcuts and Sill itself speak the same language.</p>
+      <div class="term" aria-label="Example terminal session">
+        <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span>example</span></div>
+<pre><span class="p">$</span> wros install -d
+<span class="p">$</span> wros up
+<span class="p">$</span> wros task add <span class="k">"buy milk"</span> --due fri
+<span class="p">$</span> wros email list --limit 5
+<span class="p">$</span> wros sill up
+<span class="c"># → opens the Sill app</span></pre>
+      </div>
+      <div class="actions">
+        <a class="btn-accent btn-sm" href="install.html#way-terminal">Install wros</a>
+        <a class="btn-ghost btn-sm" href="cli.html">Command line guide</a>
+      </div>
+    </div>
 
-    function lerp(a, b, t) { return a + (b - a) * t; }
-    let tick = 0;
+    <div class="tool-card">
+      <div class="tool-brand">
+        <img src="/brand/sill-zipper-icon-dark.svg" alt="" />
+        <span class="tool-tag">Sill · companion app · desktop &amp; web</span>
+      </div>
+      <h3>The calm window onto the same cores</h3>
+      <p class="lede">Sill closes the gap between a traditional OS and everyday people. You get the power of the system in one calm window, centered on people and groups rather than protocols, with no terminal required.</p>
+      <div class="cap-grid">
+        <div class="cap"><b>Email</b><span>Gmail, Outlook, IMAP</span></div>
+        <div class="cap"><b>Calendar</b><span>events &amp; reminders</span></div>
+        <div class="cap"><b>Tasks</b><span>to-dos &amp; planner</span></div>
+        <div class="cap"><b>Contacts</b><span>people &amp; relationships</span></div>
+        <div class="cap"><b>Codes</b><span>verification codes</span></div>
+        <div class="cap"><b>PDF</b><span>read, fill &amp; sign</span></div>
+      </div>
+      <div class="surfaces"><span class="chip">Windows</span><span class="chip">Debian / Ubuntu</span><span class="chip">Web</span></div>
+      <div class="actions">
+        <a class="btn-ghost btn-sm" href="install.html#way-app">Install Sill</a>
+      </div>
+    </div>
 
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      tick += 0.008;
-      for (const d of dots) {
-        const dx = d.x - mouse.x, dy = d.y - mouse.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        const prox = Math.max(0, 1 - dist / INFLUENCE);
-        const idle = Math.sin(tick + d.phase) * 0.3 + 0.7;
-        const radius = BASE_R * idle + prox * (MAX_R - BASE_R);
-        const gv = Math.round(lerp(218, 195, idle * 0.12));
-        const r = Math.round(lerp(gv, ACCENT[0], prox));
-        const g = Math.round(lerp(gv, ACCENT[1], prox));
-        const b = Math.round(lerp(gv, ACCENT[2], prox));
-        const a = lerp(0.28, 1, prox * 0.9 + idle * 0.08);
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r},${g},${b},${a.toFixed(2)})`;
-        ctx.fill();
-      }
-      raf = requestAnimationFrame(draw);
-    }
+  </div>
+</div>
 
-    window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    window.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
-    window.addEventListener('resize', () => { cancelAnimationFrame(raf); resize(); draw(); });
-    resize(); draw();
-  </script>
+<!-- STATUS -->
+<div class="status-wrap" id="status">
+  <div class="wrap status">
+    <div>
+      <h2>Early, and<br>moving in <em>the open</em></h2>
+      <p>The command line and Sill are built and growing. The larger vision, the Vulkan user space and the interaction model, is still on the drawing board. Here is where each piece stands today.</p>
+    </div>
+    <div class="board">
+      <div class="row"><span class="l">wros command line</span><span class="badge b-built">Built</span></div>
+      <div class="row"><span class="l">Sill desktop</span><span class="badge b-built">Built</span></div>
+      <div class="row"><span class="l">Sill web</span><span class="badge b-built">Built</span></div>
+      <div class="row"><span class="l">Email · calendar · tasks · contacts</span><span class="badge b-built">Built</span></div>
+      <div class="row"><span class="l">AI assistant · Matrix / WhatsApp</span><span class="badge b-early">Beta</span></div>
+      <div class="row"><span class="l">Text messages (SMS)</span><span class="badge b-plan">Placeholder</span></div>
+      <div class="row"><span class="l">Vulkan user space</span><span class="badge b-plan">Planning</span></div>
+      <div class="row"><span class="l">Public release</span><span class="badge b-plan">Not yet</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="contact-wrap">
+  <div class="wrap contact">
+    <div class="eyebrow">Get involved</div>
+    <h2>Interested in what we're building?</h2>
+    <p>We're looking for developers, collaborators, and people who believe you should own your data and your computer.</p>
+    <div class="contact-links">
+      <a href="mailto:{{CONTACT_EMAIL}}" class="btn-accent">Send us a message</a>
+      <a href="install.html" class="btn-ghost">Install guide</a>
+    </div>
+  </div>
+</div>
+
+<!--@include footer-->
 </body>
 </html>

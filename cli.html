@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command line guide · White Room OS</title>
+  <meta name="description" content="How to use the wros command line: starting the core, running commands, output, safety, scripting and AI agents." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <!--@include critical-->
+  <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+<!--@include sprite-->
+<!--@include intro-->
+<!--@include loader-->
+<canvas id="bg-canvas"></canvas>
+<!--@include header-->
+
+<div class="wrap docs">
+  <aside class="side" aria-label="On this page">
+    <div class="grp">Start</div>
+    <a href="#overview">Overview</a>
+    <a href="#five-minutes">Five minutes</a>
+    <a href="#components">Components</a>
+    <div class="grp">Using it</div>
+    <a href="#running">Running a command</a>
+    <a class="sub" href="#help">Getting help</a>
+    <a class="sub" href="#args">Ids &amp; dates</a>
+    <a href="#output">Output &amp; exit codes</a>
+    <a href="#safety">Safety</a>
+    <a href="#examples">Examples</a>
+    <div class="grp">Reference</div>
+    <a href="#core">Run the core</a>
+    <a href="#scripting">Scripts &amp; AI agents</a>
+    <a href="#trouble">Troubleshooting</a>
+  </aside>
+
+  <main class="doc">
+    <div class="eyebrow">Documentation</div>
+    <h1>The command line guide</h1>
+    <p class="lead">Whatever the Sill app does with your mail, calendar, tasks and contacts, <code class="inline">wros</code> does too, from a shell, a script, a scheduled job or an AI agent. This page is the short tour; the full command reference ships with the tool.</p>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>Sill is a set of small programs called <b>cores</b>, one per area, behind one local gateway. You only ever type <code class="inline">wros</code>. The interface commands live under <code class="inline">wros sill</code>, and <code class="inline">sill</code> is an alias for that.</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span>how it fits</span></div>
+<pre>you ── wros task add … ──▶ gateway (127.0.0.1) ──▶ tasks core ──▶ encrypted local database
+                                  │                 email, calendar, contacts, codes, media,
+                                  │                 pdf, ai, matrix, sms cores
+                                  └─ never routes secrets: the connectors core is the only
+                                     one that holds passwords and tokens</pre></div>
+      <p>Each area is a <b>component</b> you can install or leave out. Run a command of a component that is not installed and you get a clear error naming it and the fix. If a core crashes, the supervisor restarts it with a back-off.</p>
+    </section>
+
+    <section id="five-minutes">
+      <h2>Five minutes</h2>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros install -d      <span class="c"># choose what to install (-m minimal, -d recommended, -c a,b exactly these)</span>
+<span class="p">$</span> wros up              <span class="c"># start the core in the background (safe to repeat)</span>
+<span class="p">$</span> wros status          <span class="c"># what is running, which accounts are connected</span>
+<span class="p">$</span> wros account connect gmail --email you@gmail.com
+<span class="p">$</span> wros email list --limit 5
+<span class="p">$</span> wros task add "buy milk" --due fri
+<span class="p">$</span> wros help task      <span class="c"># usage of every task command</span></pre></div>
+      <p>Not installed yet? Start with the <a href="install.html" style="color:var(--accent)">install guide</a>.</p>
+    </section>
+
+    <section id="components">
+      <h2>Components</h2>
+      <p><code class="inline">wros components</code> lists them. Installing is additive; features that need two components say which one is missing.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Component</th><th>Gives you</th><th>Stage</th></tr></thead>
+        <tbody>
+          <tr><td><code>email</code></td><td>Mail, tags, insights, aliases, signatures, drafts, search</td><td>stable</td></tr>
+          <tr><td><code>connectors</code></td><td>Adding accounts and signing in; the only holder of passwords and tokens</td><td>stable</td></tr>
+          <tr><td><code>calendar</code></td><td>Calendars, events, invitations, reminders</td><td>stable</td></tr>
+          <tr><td><code>tasks</code></td><td>Tasks, tags, linking tasks to events</td><td>stable</td></tr>
+          <tr><td><code>contacts</code></td><td>Contacts, channels, relationships, suggestions</td><td>stable</td></tr>
+          <tr><td><code>codes</code></td><td>Verification codes found in your mail</td><td>stable</td></tr>
+          <tr><td><code>media</code></td><td>Attachments sorted into folders</td><td>stable</td></tr>
+          <tr><td><code>pdf</code></td><td>Read, fill, redact and sign PDFs</td><td>stable</td></tr>
+          <tr><td><code>ai</code></td><td>AI chat sessions, classification, summaries</td><td>beta</td></tr>
+          <tr><td><code>matrix</code></td><td>Matrix / WhatsApp chat (no terminal commands yet)</td><td>beta</td></tr>
+          <tr><td><code>sms</code></td><td>Stored text messages (phone sync is not built)</td><td>placeholder</td></tr>
+          <tr><td><code>ui</code></td><td>The Sill desktop app</td><td>stable</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="running">
+      <h2>Running a command</h2>
+      <p>A command is words and options. Quote anything with spaces. Every command has the shape <code class="inline">wros &lt;domain&gt; &lt;action&gt; [arguments] [options]</code>.</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros task add "buy milk" --due fri --priority important
+<span class="p">$</span> wros email search "is:unread from:alice"
+<span class="p">$</span> wros event add "Standup" --start "fri 09:00"
+<span class="p">$</span> wros contact add "Ada Lovelace" --email ada@example.com</pre></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>If</th><th>then <code>wros &lt;command&gt;</code></th></tr></thead>
+        <tbody>
+          <tr><td>the core is running</td><td>attaches to it, sharing accounts and queues, so the desktop app updates live</td></tr>
+          <tr><td>nothing is running</td><td>starts only the core(s) it needs, runs, and stops them again</td></tr>
+        </tbody>
+      </table></div>
+      <p>Options every command accepts: <code class="inline">--json</code>, <code class="inline">--text</code>, <code class="inline">--yes</code>, <code class="inline">--standalone</code> (ignore a running core), <code class="inline">--up</code> (start the core first), <code class="inline">--level</code> (cap this call's safety level), <code class="inline">--client</code> (the name recorded in the audit log).</p>
+
+      <h3 id="help">Getting help</h3>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros help                 <span class="c"># the command list, grouped by domain</span>
+<span class="p">$</span> wros help task            <span class="c"># every task command</span>
+<span class="p">$</span> wros help task add        <span class="c"># one command (same as: wros task add --help)</span>
+<span class="p">$</span> wros commands --json     <span class="c"># every command with a JSON Schema</span>
+<span class="p">$</span> wros schema task.add     <span class="c"># the schema of one command</span></pre></div>
+
+      <h3 id="args">Ids, dates and paths</h3>
+      <ul class="plain">
+        <li><b>Ids:</b> tables print the first 8 characters. Anywhere an id is expected, any unique prefix of 4 or more characters works.</li>
+        <li><b>Dates:</b> <code class="inline">2026-10-09</code>, <code class="inline">today</code>, <code class="inline">tomorrow</code>, <code class="inline">fri</code>, <code class="inline">+3d</code>. <b>Date-times:</b> <code class="inline">"fri 14:30"</code>, <code class="inline">"2026-10-09 09:00"</code> (local time).</li>
+        <li><b>Paths:</b> relative paths are relative to where you are, not to the background core.</li>
+        <li><b>Structured input:</b> <code class="inline">wros call &lt;command&gt; --args '&lt;json&gt;'</code>, or <code class="inline">--args -</code> to read JSON from standard input. It avoids shell quoting for multi-line mail bodies.</li>
+      </ul>
+    </section>
+
+    <section id="output">
+      <h2>Output &amp; exit codes</h2>
+      <p>On a terminal you get tables. Piped, or with <code class="inline">--json</code>, you get one JSON envelope. <code class="inline">--text</code> forces tables.</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span>example</span></div>
+<pre><span class="p">$</span> wros task list
+ID        TITLE             PRIORITY   DUE         PIN  REPEAT
+--------  ----------------  ---------  ----------  ---  ------
+c364b634  buy milk          important  2026-10-16  no   -
+(1 rows)
+
+<span class="p">$</span> wros task list --json
+{"command":"task.list","data":[…],"level":"read","ok":true}</pre></div>
+      <p>Every failure prints <code class="inline">error[WROS-Exxx]: &lt;cause&gt;</code> and, when one exists, <code class="inline">fix: &lt;command to paste&gt;</code>.</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Exit</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>ok</td></tr>
+          <tr><td><code>2</code></td><td>usage mistake or unknown command</td></tr>
+          <tr><td><code>3</code></td><td>not found</td></tr>
+          <tr><td><code>4</code></td><td>needs confirmation (repeat with <code>--yes</code>)</td></tr>
+          <tr><td><code>5</code></td><td>denied by the safety policy</td></tr>
+          <tr><td><code>6</code></td><td>failed: the work was attempted and did not succeed</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="safety">
+      <h2>Safety</h2>
+      <p>Every command has a <b>level</b>: <code class="inline">read</code> (looks only), <code class="inline">write</code> (changes local data), <code class="inline">ai</code> (calls an AI provider), <code class="inline">send</code> (sends something to other people), <code class="inline">destructive</code> (removes for good).</p>
+      <ul class="plain">
+        <li>A person at a terminal gets every level. A script, a pipe or an agent gets <code class="inline">read</code>, <code class="inline">write</code> and <code class="inline">ai</code>.</li>
+        <li>Widen or narrow with <code class="inline">SILL_LEVEL</code>, with <code class="inline">~/.sill/cli-policy.json</code>, or per call with <code class="inline">--level</code>. A call can lower its own level, never raise the session's.</li>
+        <li><code class="inline">send</code> and <code class="inline">destructive</code> commands always need <code class="inline">--yes</code>, even when permitted.</li>
+        <li>Every call is appended to <code class="inline">~/.sill/logs/cli-audit.jsonl</code>.</li>
+        <li><b>Secrets are never shown or taken on a command line.</b> No command prints a password, token or API key, and none accepts one as an argument.</li>
+      </ul>
+      <p>You can also see and switch every outside connection the cores make:</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros permissions list
+<span class="p">$</span> wros permissions disable &lt;id&gt;</pre></div>
+    </section>
+
+    <section id="examples">
+      <h2>Examples</h2>
+      <p>The full argument list of all commands is in the reference that ships with <code class="inline">wros</code> (<code class="inline">wros help &lt;domain&gt;</code>).</p>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Area</th><th>Try</th></tr></thead>
+        <tbody>
+          <tr><td>Accounts</td><td><code>wros account providers</code> · <code>wros account connect gmail --email you@gmail.com</code> · <code>wros account list</code></td></tr>
+          <tr><td>Email</td><td><code>wros email list</code> · <code>wros email show &lt;id&gt;</code> · <code>wros email draft save …</code> · <code>wros email send … --yes</code></td></tr>
+          <tr><td>Calendar</td><td><code>wros event list</code> · <code>wros event add "Standup" --start "fri 09:00"</code> · <code>wros calendar sync</code></td></tr>
+          <tr><td>Tasks</td><td><code>wros task add "write the report" --due +3d</code> · <code>wros task list</code> · <code>wros task done &lt;id&gt;</code></td></tr>
+          <tr><td>Contacts</td><td><code>wros contact search ada</code> · <code>wros contact show &lt;id&gt;</code> · <code>wros contact nameless</code></td></tr>
+          <tr><td>Codes &amp; media</td><td><code>wros code list</code> · <code>wros media folders</code></td></tr>
+          <tr><td>PDF</td><td><code>wros pdf info lease.pdf</code> · <code>wros pdf text lease.pdf --pages 1-2</code> · <code>wros pdf redact lease.pdf --find "123-45-6789"</code></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><span><b>PDF editing is careful.</b> <code class="inline">pdf fill</code>, <code class="inline">redact</code> and <code class="inline">sign</code> save a new file next to the original and never overwrite it unless you add <code class="inline">--replace</code>. <code class="inline">pdf sign</code> draws a picture of a signature; it is a visual signature, not a digital one.</span></div>
+    </section>
+
+    <section id="core">
+      <h2>Run the core</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>wros up</code></td><td>Start the gateway and every installed core in the background. Does nothing if already running.</td></tr>
+          <tr><td><code>wros status</code></td><td>Running or not, version, uptime, components, connected accounts.</td></tr>
+          <tr><td><code>wros shutdown</code></td><td>Stop everything cleanly. Also <code>restart</code>.</td></tr>
+          <tr><td><code>wros sync [mail|calendar]</code></td><td>Sync now.</td></tr>
+          <tr><td><code>wros logs -f</code></td><td>Follow the system log.</td></tr>
+          <tr><td><code>wros doctor</code></td><td>Diagnostics: data directory, database, mode, allowed levels.</td></tr>
+          <tr><td><code>wros notify test | on | off | quiet</code></td><td>Check or change native notifications.</td></tr>
+          <tr><td><code>wros autostart on | off</code></td><td>Start at login (Windows <code>Run</code> entry; Linux <code>systemd --user</code> unit).</td></tr>
+          <tr><td><code>wros sill up | web</code></td><td>Open the desktop app, or the web UI at <code>http://sill.localhost:4780</code> (this computer only).</td></tr>
+          <tr><td><code>wros update | backup | restore</code></td><td>Keep it current, and keep your data safe.</td></tr>
+        </tbody>
+      </table></div>
+      <p><code class="inline">wros up</code> is a detached user process: no administrator rights, no OS service. It takes an instance lock, restarts crashed cores, and listens only on 127.0.0.1 with a random token.</p>
+    </section>
+
+    <section id="scripting">
+      <h2>Scripts &amp; AI agents</h2>
+      <p>Piped output is JSON and exit codes are stable, so scripts can rely on both. For AI tools, <code class="inline">wros mcp</code> is an MCP server with one tool per command.</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> wros up
+<span class="p">$</span> claude mcp add sill -- wros mcp</pre></div>
+      <ul class="plain">
+        <li>An agent session defaults to <code class="inline">read</code>, <code class="inline">write</code> and <code class="inline">ai</code>. For a read-only assistant, start it with <code class="inline">SILL_LEVEL=read</code>.</li>
+        <li>Sending mail or deleting needs your permission and <code class="inline">confirm: true</code> (<code class="inline">--yes</code> in a shell). Agents should never add it on their own.</li>
+        <li>An agent cannot read or change passwords, OAuth secrets, tokens or API keys, and cannot add an IMAP account.</li>
+        <li><code class="inline">wros events</code> streams changes (<code class="inline">email:new</code>, <code class="inline">contacts:changed</code>…) as JSON lines.</li>
+      </ul>
+    </section>
+
+    <section id="trouble">
+      <h2>Troubleshooting</h2>
+      <h3>"the tasks component is not installed" (WROS-E317)</h3>
+      <p>Run the fix it prints: <code class="inline">wros install -c tasks</code>.</p>
+      <h3>"not answering" (WROS-E319)</h3>
+      <p>A core has crashed. The supervisor restarts it by itself; check <code class="inline">wros status</code> and <code class="inline">wros logs</code>. After five crashes in ten minutes it gives up, and crash reports are kept under <code class="inline">~/.sill/logs/crashes</code>.</p>
+      <h3>Exit code 4 or WROS-E513</h3>
+      <p>The command sends or deletes something. Check it, then repeat with <code class="inline">--yes</code>.</p>
+      <h3>Not in the terminal yet</h3>
+      <p>Matrix / WhatsApp, adding a password (IMAP) account, and the PDF signature editor are app-only for now.</p>
+    </section>
+
+    <div class="pager">
+      <a href="install.html"><small>Back</small><span>Download &amp; install</span></a>
+      <a href="privacy.html"><small>Next</small><span>Privacy policy</span></a>
+    </div>
+  </main>
+</div>
+
+<!--@include footer-->
+</body>
+</html>
