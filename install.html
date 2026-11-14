@@ -22,6 +22,7 @@
     <a href="#download">Download</a>
     <a href="#requirements">Requirements</a>
     <a href="#install-steps">Install steps</a>
+    <a class="sub" href="#quickstart-windows">Quick start: Windows</a>
     <a class="sub" href="#way-terminal">Terminal first</a>
     <a class="sub" href="#way-app">Sill app first</a>
     <a class="sub" href="#both">Doing both</a>
@@ -33,7 +34,7 @@
   </aside>
 
   <main class="doc">
-    <div class="warn"><span><b>No public release yet.</b> The links below point at a placeholder releases page, and the install scripts and installers will only work once the first release is published. The steps are accurate to the current build.</span></div>
+    <div class="warn"><span><b>Version 0.1.0 is the first public release.</b> The installers are not code-signed yet, so Windows SmartScreen may stop the first run: choose <b>More info</b>, then <b>Run anyway</b>. Everything you download is checked against a published SHA-256 sum before it is installed.</span></div>
 
     <div class="eyebrow">Install</div>
     <h1>Download &amp; install</h1>
@@ -67,7 +68,7 @@
           <a class="btn-ghost" href="#way-terminal">Jump to the commands</a>
         </div>
       </div>
-      <p>The releases page also lists <code class="inline">SHA256SUMS</code>. Sill for macOS is not available yet; <code class="inline">wros</code> itself does support macOS shells for PATH setup.</p>
+      <p>The PDF Editor for Windows is a separate download on <a href="{{PDF_EDITOR_URL}}">its own release page</a>. The releases page also lists <code class="inline">SHA256SUMS</code>. Sill for macOS is not available yet; <code class="inline">wros</code> itself does support macOS shells for PATH setup.</p>
     </section>
 
     <section id="requirements">
@@ -78,12 +79,42 @@
         <li>An internet connection for the first install, which fetches the cores you choose. After that Sill works against your local data.</li>
         <li>For Sill on the web: a modern browser on the same computer. The web UI is served only to this machine.</li>
       </ul>
-      <div class="note"><span><b>Honest status.</b> The Linux install has not yet been run on a real machine, and <code class="inline">wros update</code> self-replacement has only been exercised by tests and dry runs.</span></div>
+      <div class="note"><span><b>Honest status.</b> The Windows steps above were run from scratch on a clean Windows 11 machine. The Linux install has not yet been run on a real machine, and <code class="inline">wros update</code> self-replacement has only been exercised by tests and dry runs.</span></div>
     </section>
 
     <section id="install-steps">
       <h2>Install steps</h2>
       <p>Pick one way. If you are unsure, take the Sill app: it needs no terminal.</p>
+
+      <h3 id="quickstart-windows">Quick start on Windows</h3>
+      <p>Three steps from a clean machine, in PowerShell. No administrator rights are needed, and your data and settings are never touched.</p>
+      <div class="steps">
+        <div class="step">
+          <h4>Install wros</h4>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">PS&gt;</span> irm {{INSTALL_URL}}/install.ps1 | iex</pre></div>
+          <p>It downloads <code class="inline">wros</code>, checks it against its published sum, installs it into <code class="inline">%LOCALAPPDATA%\Programs\wros</code> and adds that folder to your user PATH. You will see:</p>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span></div>
+<pre>Installed wros 0.1.0 in C:\Users\you\AppData\Local\Programs\wros (wros and sill).
+Added C:\Users\you\AppData\Local\Programs\wros to your user PATH: open a new terminal for wros to be found.</pre></div>
+        </div>
+        <div class="step">
+          <h4>Open a new PowerShell window and install everything recommended</h4>
+          <p>A new window is needed so the PATH change is picked up.</p>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">PS&gt;</span> wros install -d</pre></div>
+          <p>It asks you to confirm, then fetches the core, email, calendar, tasks, contacts, codes, media and PDF, and installs the Sill desktop app. Each file is checked before it is installed. It prints <code class="inline">"installed":"0.1.0"</code> when it is done.</p>
+        </div>
+        <div class="step">
+          <h4>Start the core and open Sill</h4>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">PS&gt;</span> wros up         <span class="c"># starts the core in the background</span>
+<span class="p">PS&gt;</span> wros status     <span class="c"># every component should say "up"</span>
+<span class="p">PS&gt;</span> wros sill up    <span class="c"># opens the Sill app</span></pre></div>
+          <p>That is the whole install. Connect your first account from the app, or from the terminal as shown under <a href="#first-run">First run</a>.</p>
+        </div>
+      </div>
+      <div class="note"><span><b>PDF Editor.</b> <code class="inline">wros install -d</code> installs the PDF core, which also works from the terminal (<code class="inline">wros pdf text file.pdf</code>). The standalone PDF Editor app is a separate download for now: <a href="{{PDF_EDITOR_URL}}">get <code class="inline">pdf-editor_..._x64-setup.exe</code> from its release page</a>.</span></div>
 
       <h3 id="way-terminal">Way 1: the terminal first</h3>
       <div class="steps">
@@ -97,12 +128,12 @@
             </div>
             <div class="panel" role="tabpanel">
               <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
-<pre><span class="p">$</span> curl -fsSL {{RELEASES_URL}}/latest/download/install.sh | sh</pre></div>
+<pre><span class="p">$</span> curl -fsSL {{INSTALL_URL}}/install.sh | sh</pre></div>
               <p style="margin-top:12px">Installs <code class="inline">wros</code> and <code class="inline">sill</code> in <code class="inline">~/.local/bin</code> (change with <code class="inline">WROS_INSTALL_DIR</code>) and checks them against <code class="inline">SHA256SUMS</code>. Options: <code class="inline">--modify-path</code>, <code class="inline">--version 0.2.0</code>, <code class="inline">--uninstall</code>.</p>
             </div>
             <div class="panel" role="tabpanel" hidden>
               <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
-<pre><span class="p">$</span> irm {{RELEASES_URL}}/latest/download/install.ps1 | iex</pre></div>
+<pre><span class="p">$</span> irm {{INSTALL_URL}}/install.ps1 | iex</pre></div>
               <p style="margin-top:12px">Per-user install into <code class="inline">%LOCALAPPDATA%\Programs\wros</code>, added to your user PATH.</p>
             </div>
             <div class="panel" role="tabpanel" hidden>
