@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Download &amp; install · White Room OS</title>
-  <meta name="description" content="Download and install Sill and the wros command line on Windows and Debian-family Linux." />
+  <meta name="description" content="Download and install Sill and the wros command line on Windows and Linux (Flatpak, Debian and Ubuntu)." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <!--@include critical-->
   <script type="module" src="/src/main.js"></script>
@@ -23,6 +23,7 @@
     <a href="#requirements">Requirements</a>
     <a href="#install-steps">Install steps</a>
     <a class="sub" href="#quickstart-windows">Quick start: Windows</a>
+    <a class="sub" href="#quickstart-linux">Quick start: Linux</a>
     <a class="sub" href="#way-terminal">Terminal first</a>
     <a class="sub" href="#way-app">Sill app first</a>
     <a class="sub" href="#both">Doing both</a>
@@ -56,6 +57,12 @@
           <a class="btn-accent" href="{{RELEASES_URL}}">Open releases page</a>
         </div>
         <div class="dl">
+          <div class="dl-head"><img src="/brand/sill-zipper-icon-dark.svg" alt="" /><h3>Sill for Linux (Flatpak)</h3></div>
+          <span class="meta">.flatpak · any distribution</span>
+          <p>The desktop app in its own sandbox, with <code class="inline">wros</code> and the core inside. No <code class="inline">sudo</code>.</p>
+          <a class="btn-accent" href="#flatpak">Install with Flatpak</a>
+        </div>
+        <div class="dl">
           <div class="dl-head"><svg viewBox="0 0 1016 242" aria-label="wros"><use href="#wm"/></svg></div>
           <span class="meta">wros-setup-windows-x86_64.exe</span>
           <p>The command line for Windows. No administrator rights; adds itself to your user PATH.</p>
@@ -74,12 +81,12 @@
     <section id="requirements">
       <h2>Requirements</h2>
       <ul class="plain">
-        <li>Windows 10 or 11, or a Debian-family Linux (Debian, Ubuntu) for the Sill desktop app.</li>
+        <li>Windows 10 or 11, or Linux (x86_64) for the Sill desktop app: the Flatpak on any distribution, or the <code class="inline">.deb</code> on Debian and Ubuntu.</li>
         <li>A terminal for <code class="inline">wros</code>. No administrator rights are needed on Windows; the Linux script installs into <code class="inline">~/.local/bin</code> without <code class="inline">sudo</code>.</li>
         <li>An internet connection for the first install, which fetches the cores you choose. After that Sill works against your local data.</li>
         <li>For Sill on the web: a modern browser on the same computer. The web UI is served only to this machine.</li>
       </ul>
-      <div class="note"><span><b>Honest status.</b> The Windows steps above were run from scratch on a clean Windows 11 machine. The Linux install has not yet been run on a real machine, and <code class="inline">wros update</code> self-replacement has only been exercised by tests and dry runs.</span></div>
+      <div class="note"><span><b>Honest status.</b> The Windows steps above were run from scratch on a clean Windows 11 machine. The Flatpak was built and run on Debian 12 (under WSL2): the app starts its core, <code class="inline">wros install -d</code> fetches the cores inside the sandbox, and tasks and PDF commands run through them. It has not yet been run on Fedora or Arch, or on a bare-metal desktop, and <code class="inline">wros update</code> self-replacement has only been exercised by tests and dry runs.</span></div>
     </section>
 
     <section id="install-steps">
@@ -115,6 +122,50 @@ Added C:\Users\you\AppData\Local\Programs\wros to your user PATH: open a new ter
         </div>
       </div>
       <div class="note"><span><b>PDF Editor.</b> <code class="inline">wros install -d</code> installs the PDF core, which also works from the terminal (<code class="inline">wros pdf text file.pdf</code>). The standalone PDF Editor app is a separate download for now: <a href="{{PDF_EDITOR_URL}}">get <code class="inline">pdf-editor_..._x64-setup.exe</code> from its release page</a>.</span></div>
+
+      <h3 id="quickstart-linux">Quick start on Linux</h3>
+      <p>Two ways, depending on your distribution. The Flatpak runs on any Linux with Flatpak and keeps Sill in its own sandbox; the <code class="inline">.deb</code> is for Debian and Ubuntu. Either way no <code class="inline">sudo</code> is needed for the Flatpak, and your data stays in your home folder.</p>
+
+      <h4 id="flatpak" style="margin-top:22px">Flatpak (any distribution)</h4>
+      <div class="steps">
+        <div class="step">
+          <h4>Add Flathub, once</h4>
+          <p>The Flatpak needs the GNOME runtime, which comes from Flathub. Most distributions have it already; this is safe to run again.</p>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo</pre></div>
+        </div>
+        <div class="step">
+          <h4>Download and install Sill</h4>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> curl -fLO {{FLATPAK_URL}}
+<span class="p">$</span> flatpak install --user ./Sill_0.1.0_x86_64.flatpak</pre></div>
+          <p>Flatpak asks to confirm the GNOME runtime (a few hundred MB, shared with other Flatpak apps) and shows what Sill may access: the network, your <code class="inline">~/.sill</code> folder, its own data folder, notifications and the keychain.</p>
+        </div>
+        <div class="step">
+          <h4>Open Sill</h4>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> flatpak run com.whiteroomos.Sill</pre></div>
+          <p>Or start it from your applications menu. On its first start the app runs its own core and shows the setup page: <b>Minimal</b>, <b>Default</b> or your own choice. It fetches the cores you pick, each checked against its published sum.</p>
+        </div>
+        <div class="step">
+          <h4>Use <code class="inline">wros</code> from a terminal <span style="font-weight:400;color:var(--gray)">(optional)</span></h4>
+          <p><code class="inline">wros</code> is inside the Flatpak and is the same one the app uses:</p>
+          <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> flatpak run --command=wros com.whiteroomos.Sill status
+<span class="p">$</span> flatpak run --command=wros com.whiteroomos.Sill install -d   <span class="c"># fetch the recommended cores</span>
+<span class="p">$</span> alias wros='flatpak run --command=wros com.whiteroomos.Sill'   <span class="c"># add to ~/.bashrc to shorten it</span></pre></div>
+        </div>
+      </div>
+      <div class="note"><span><b>Updating the Flatpak.</b> Download the newer <code class="inline">.flatpak</code> and install it the same way: <code class="inline">flatpak install --user</code> replaces the old version and keeps your data. <code class="inline">wros update</code> updates the cores and <code class="inline">wros</code>, and leaves the app to Flatpak. Sill is not on Flathub yet.</span></div>
+
+      <h4 id="deb" style="margin-top:28px">Debian and Ubuntu (.deb)</h4>
+      <p>The one-line script installs <code class="inline">wros</code> without <code class="inline">sudo</code>; <code class="inline">wros install -d</code> then fetches the cores and installs the app, asking for your password once for <code class="inline">dpkg</code>.</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> curl -fsSL {{INSTALL_URL}}/install.sh | sh
+<span class="p">$</span> wros install -d
+<span class="p">$</span> wros up
+<span class="p">$</span> wros sill up</pre></div>
+      <p>On other distributions the same script and <code class="inline">wros install -c email,tasks</code> install <code class="inline">wros</code> and the cores; the Sill app itself comes from the Flatpak above.</p>
 
       <h3 id="way-terminal">Way 1: the terminal first</h3>
       <div class="steps">
