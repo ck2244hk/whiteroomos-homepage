@@ -1,19 +1,66 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --white:        #FDFCFB;
-  --off:          #F6F3EF;
-  --gray:         #9A9490;
-  --mid:          #6B6560;
-  --dark:         #1C1917;
-  --accent:       #A0724A;
-  --accent-light: #C9966E;
-  --accent-pale:  #F0E6DA;
-  --accent-edge:  #DFC5A8;
-  --border:       #E8E2DA;
-  --term-bg:      #1C1917;
-  --term-fg:      #E7E0D8;
-  --radius:       14px;
+  color-scheme: light dark;
+
+  /* The Sill app's own tokens (sill-ui src/index.css, STYLEGUIDE.md), so the site and the app read as one product:
+     warm earth neutrals, an olive accent, flat white cards with a fine border, small radii, the system font. */
+  --color-accent: #47530b;
+  --color-bg: #f5f2ee;
+  --color-surface: #ffffff;
+  --color-surface-raised: #faf8f5;
+  --color-border: #e2dbd3;
+  --color-text-primary: #1c1a17;
+  --color-text-secondary: #6b6259;
+  --color-text-muted: #9e9389;
+  --color-danger: #b94040;
+  --on-accent: #ffffff;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  /* the names the rules below already use, on those tokens */
+  --white:        var(--color-bg);
+  --off:          var(--color-surface);
+  --gray:         var(--color-text-muted);
+  --mid:          var(--color-text-secondary);
+  --dark:         var(--color-text-primary);
+  --accent:       var(--color-accent);
+  --accent-light: #8ba13a;
+  --accent-pale:  color-mix(in srgb, var(--color-accent) 9%, var(--color-surface));
+  --accent-edge:  color-mix(in srgb, var(--color-accent) 26%, var(--color-surface));
+  --border:       var(--color-border);
+  --ink:          #1c1a17;
+  --term-bg:      var(--ink);
+  --term-fg:      #e7e0d8;
+  --radius:       var(--radius-lg);
+  --warn-bg:      #fbf1dc;
+  --warn-border:  #ebd3a1;
+  --warn-fg:      #6f4e12;
+}
+
+/* The app's dark theme, followed automatically. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-accent: #8ba13a;
+    --color-bg: #171512;
+    --color-surface: #201d19;
+    --color-surface-raised: #292420;
+    --color-border: #3a342d;
+    --color-text-primary: #f2ede6;
+    --color-text-secondary: #b8ada1;
+    --color-text-muted: #7d746a;
+    --color-danger: #e0685a;
+    --on-accent: #171512;
+    --accent-pale: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+    --accent-edge: color-mix(in srgb, var(--color-accent) 32%, var(--color-surface));
+    --warn-bg: #2b2417;
+    --warn-border: #4a3d22;
+    --warn-fg: #d9b878;
+  }
 }
 
 html { scroll-behavior: smooth; }
@@ -21,17 +68,11 @@ html, body {
   min-height: 100%;
   background: var(--white);
   color: var(--dark);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; }
 
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(0,0,0,0.012) 3px, rgba(0,0,0,0.012) 4px);
-  pointer-events: none; z-index: 100;
-}
 #bg-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
 
 /* ── HEADER ── */
@@ -40,13 +81,13 @@ header.top {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 28px;
   border-bottom: 1px solid var(--border);
-  background: rgba(253,252,251,0.88);
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   z-index: 50;
 }
 .logo {
   display: flex; align-items: center; gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
   color: var(--dark); text-decoration: none;
 }
@@ -64,28 +105,28 @@ header.top nav a:hover, header.top nav a[aria-current="page"] { background: var(
   padding: 7px 18px; border: 1px solid var(--accent-edge); border-radius: 9px;
   text-decoration: none; transition: background .15s, transform .1s;
 }
-.nav-contact:hover { background: #E8D4BE; transform: translateY(-1px); }
+.nav-contact:hover { background: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface)); transform: translateY(-1px); }
 
 /* ── SHARED ── */
 .wrap { max-width: 1080px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 1; }
 .eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-ui);
   font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
   color: var(--accent); display: flex; align-items: center; gap: 10px;
 }
 .eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--accent-light); }
 .btn-accent, .btn-ghost {
-  font-family: 'Space Grotesk', sans-serif; font-size: 14px;
-  padding: 13px 26px; border-radius: 10px; cursor: pointer;
+  font-family: var(--font-ui); font-size: 14px;
+  padding: 12px 26px; border-radius: var(--radius-pill); cursor: pointer;
   text-decoration: none; display: inline-block;
   transition: background .15s, transform .1s, border-color .15s, color .15s;
 }
-.btn-accent { font-weight: 500; background: var(--accent); color: var(--white); border: none; }
-.btn-accent:hover { background: var(--accent-light); transform: translateY(-1px); }
+.btn-accent { font-weight: 600; background: var(--accent); color: var(--on-accent); border: none; }
+.btn-accent:hover { filter: brightness(1.1); transform: translateY(-1px); }
 .btn-ghost { background: transparent; color: var(--mid); border: 1px solid var(--border); }
 .btn-ghost:hover { border-color: var(--accent-light); color: var(--accent); background: var(--accent-pale); }
 code.inline {
-  font-family: 'JetBrains Mono', monospace; font-size: .86em;
+  font-family: var(--font-ui); font-size: .86em;
   background: var(--off); border: 1px solid var(--border);
   padding: 1px 6px; border-radius: 6px; color: var(--dark);
 }
@@ -94,7 +135,7 @@ code.inline {
 .term {
   background: var(--term-bg); color: var(--term-fg);
   border-radius: var(--radius); overflow: hidden;
-  font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.75;
+  font-family: var(--font-ui); font-size: 13px; line-height: 1.75;
   box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -22px rgba(28,25,23,.45);
 }
 .term-bar {
@@ -110,7 +151,7 @@ code.inline {
 .term .ok { color: #9DBE86; }
 .term .k  { color: #E0B48A; }
 .copy {
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  font-family: var(--font-ui); font-size: 11px;
   background: rgba(255,255,255,.06); color: #CFC6BC;
   border: 1px solid rgba(255,255,255,.1); border-radius: 7px;
   padding: 3px 10px; cursor: pointer; transition: background .15s;
@@ -126,7 +167,7 @@ footer.foot .wrap {
   padding-top: 28px; padding-bottom: 28px;
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
 }
-.footer-logo { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray); display: flex; align-items: center; gap: 10px; }
+.footer-logo { font-family: var(--font-ui); font-size: 12px; color: var(--gray); display: flex; align-items: center; gap: 10px; }
 .footer-logo svg { height: 11px; width: auto; color: var(--gray); }
 .footer-links { display: flex; gap: 4px; font-size: 13px; }
 .footer-links a { color: var(--mid); text-decoration: none; padding: 5px 10px; border-radius: 7px; transition: background .15s, color .15s; }

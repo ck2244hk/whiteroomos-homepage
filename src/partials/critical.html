@@ -9,21 +9,24 @@
     setTimeout(function () { document.documentElement.classList.remove('loading'); }, 4000);
   })();
 </script>
+<meta name="color-scheme" content="light dark" />
 <style>
-  /* Critical CSS: keeps the page from flashing unstyled (large blue logo) before the main stylesheet applies. */
-  html, body { background: #FDFCFB; margin: 0; }
+  /* Critical CSS: keeps the page from flashing unstyled (large blue logo) before the main stylesheet applies. The colors are the app's (light, dark). */
+  :root { --cp-bg: #f5f2ee; --cp-fg: #1c1a17; --cp-muted: #9e9389; --cp-accent: #47530b; }
+  @media (prefers-color-scheme: dark) { :root { --cp-bg: #171512; --cp-fg: #f2ede6; --cp-muted: #7d746a; --cp-accent: #8ba13a; } }
+  html, body { background: var(--cp-bg); margin: 0; }
   a { color: inherit; }
   svg { max-width: 100%; }
   header.top .logo svg { height: 15px; width: auto; }
-  #intro { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; align-content: center; gap: 22px; background: #FDFCFB; color: #1C1917; }
-  #intro svg { width: min(62vw, 380px); height: auto; --stem: #A0724A; }
-  #intro p { font: 500 11px/1 'JetBrains Mono', monospace; letter-spacing: .18em; text-transform: uppercase; color: #9A9490; margin: 0; }
+  #intro { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; align-content: center; gap: 22px; background: var(--cp-bg); color: var(--cp-fg); }
+  #intro svg { width: min(62vw, 380px); height: auto; --stem: var(--cp-accent); }
+  #intro p { font: 500 11px/1 system-ui, -apple-system, 'Segoe UI', sans-serif; letter-spacing: .18em; text-transform: uppercase; color: var(--cp-muted); margin: 0; }
   .no-intro #intro { display: none; }
   /* Loading screen: page content stays hidden until styles + fonts are ready. Only active when JS added .loading. */
   .loading body > :not(#loader):not(#intro):not(svg) { visibility: hidden; }
-  #loader { display: none; position: fixed; inset: 0; z-index: 999; place-items: center; background: #FDFCFB; color: #1C1917; }
+  #loader { display: none; position: fixed; inset: 0; z-index: 999; place-items: center; background: var(--cp-bg); color: var(--cp-fg); }
   .loading #loader { display: grid; animation: loaderIn .3s ease .2s both; }
-  #loader svg { width: 64px; height: auto; --stem: #A0724A; animation: loaderPulse 1.2s ease-in-out infinite; }
+  #loader svg { width: 64px; height: auto; --stem: var(--cp-accent); animation: loaderPulse 1.2s ease-in-out infinite; }
   @keyframes loaderIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes loaderPulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
   #intro { animation: introOut .55s ease 1.9s forwards; }

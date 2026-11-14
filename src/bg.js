@@ -1,6 +1,9 @@
 // Dot grid that swells near the pointer. Static when the visitor prefers reduced motion.
 const SPACING = 36, BASE_R = 1.2, MAX_R = 5.5, INFLUENCE = 140
-const ACCENT = [160, 114, 74]
+const dark = matchMedia('(prefers-color-scheme: dark)').matches
+// the app's accent, and a warm grey for dots at rest, per theme
+const ACCENT = dark ? [139, 161, 58] : [71, 83, 11]
+const REST = dark ? [58, 52, 45] : [226, 219, 211]
 
 export function initBackground() {
   const canvas = document.getElementById('bg-canvas')
@@ -29,9 +32,8 @@ export function initBackground() {
       const prox = Math.max(0, 1 - dist / INFLUENCE)
       const idle = still ? 0.7 : Math.sin(tick + d.phase) * 0.3 + 0.7
       const radius = BASE_R * idle + prox * (MAX_R - BASE_R)
-      const gv = Math.round(lerp(218, 195, idle * 0.12))
       const a = lerp(0.28, 1, prox * 0.9 + idle * 0.08)
-      const [r, g, b] = ACCENT.map(c => Math.round(lerp(gv, c, prox)))
+      const [r, g, b] = ACCENT.map((c, i) => Math.round(lerp(REST[i], c, prox)))
       ctx.beginPath()
       ctx.arc(d.x, d.y, radius, 0, Math.PI * 2)
       ctx.fillStyle = `rgba(${r},${g},${b},${a.toFixed(2)})`
