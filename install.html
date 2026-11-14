@@ -287,6 +287,12 @@ Added C:\Users\you\AppData\Local\Programs\wros to your user PATH: open a new ter
       <p>Run the fix it prints: <code class="inline">wros install -c tasks</code>.</p>
       <h3>Toasts do not appear on Windows</h3>
       <p>Run <code class="inline">wros notify test</code>, and check Focus assist / Do not disturb.</p>
+      <h3>The Flatpak prints "Error 71 (Protocol error) dispatching to Wayland display" and shows no window</h3>
+      <p>WebKit's graphics path fails on some GPU and Wayland combinations, mostly NVIDIA. Start it with the plain renderer, or make that permanent for your user:</p>
+      <div class="term"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><button class="copy">Copy</button></div>
+<pre><span class="p">$</span> flatpak run --env=WEBKIT_DISABLE_DMABUF_RENDERER=1 com.whiteroomos.Sill
+<span class="p">$</span> flatpak override --user --env=WEBKIT_DISABLE_DMABUF_RENDERER=1 com.whiteroomos.Sill   <span class="c"># make it permanent</span></pre></div>
+      <p>Then start Sill as usual. If it still shows no window, tell us your GPU and distribution.</p>
       <h3>Anything else</h3>
       <p><code class="inline">wros doctor</code> reports the data directory, the database and which mode a command would run in. <code class="inline">wros logs -f</code> follows the system log.</p>
     </section>
